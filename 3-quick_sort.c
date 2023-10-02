@@ -26,34 +26,38 @@ void swap(int *num1, int *num2)
 int lomuto_partition(int *array, size_t size, int low, int high)
 {
 	/* choose the last element as the pivot*/
-	int *p, left = low, right = low;
-	p = array + high;
+	int p, tmp_pi, j;
 
-	while (left < right)
+	p = array[high]; /* last element is the pivot */
+	tmp_pi = low - 1; /* temporary pivot index */
+	j = low;
+
+	while (j < high)
 	{
-		if (array[left] < *p)
+		if (array[j] < p)
 		{
-			if (right < left)
+			tmp_pi++; /* move it forward */
+
+			if (tmp_pi != j)
 			{
-				swap(array + left, array + right);
+				swap(array + tmp_pi, array + j);
 				print_array(array, size);
 			}
-			right++;
 		}
-		left++;
+		j++;
 	}
 
-	if (array[right] > *p)
+	if (array[high] < array[tmp_pi + 1])
 	{
-		swap(array + right, p);
+		swap(array + tmp_pi + 1, array + high);
 		print_array(array, size);
 	}
 
-	return (right);
+	return (tmp_pi + 1);
 }
 
 /**
- * lomuto_sort - implement the quick sort
+ * quicksort - implement the quick sort
  *
  * @array: The array to be sorted
  * @size: Number of elements in @array
@@ -62,7 +66,7 @@ int lomuto_partition(int *array, size_t size, int low, int high)
  *
  * Return: Nothing
  */
-void lomuto_sort(int *array, size_t size, int low, int high)
+void quicksort(int *array, size_t size, int low, int high)
 {
 	int pivot;
 
@@ -72,8 +76,8 @@ void lomuto_sort(int *array, size_t size, int low, int high)
 	pivot = lomuto_partition(array, size, low, high);
 
 	/* sort partitions */
-	lomuto_sort(array, size, low, pivot - 1); /* left side*/
-	lomuto_sort(array, size, pivot + 1, high);
+	quicksort(array, size, low, pivot - 1); /* left side*/
+	quicksort(array, size, pivot + 1, high);
 }
 
 /**
@@ -91,5 +95,5 @@ void quick_sort(int *array, size_t size)
 		return;
 	}
 
-	lomuto_sort(array, size, 0, size - 1);
+	quicksort(array, size, 0, size - 1);
 }
